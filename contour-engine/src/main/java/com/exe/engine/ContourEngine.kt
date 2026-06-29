@@ -1,24 +1,20 @@
 package com.exe.engine
 
-import java.util.ServiceLoader
-import kotlin.jvm.Throws
-
-interface Engine {
-    fun process()
-}
-
 object ContourEngine {
 
-    private val engine: Engine by lazy {
-        ServiceLoader.load(Engine::class.java)
-            .firstOrNull()
-            ?: error(
-                "No Engine implementation found. Add either opencv-engine or mediapipe-engine dependency."
-            )
+    @Volatile
+    private var engine: Engine? = null
+
+    internal fun register(engine: Engine) {
+        this.engine = engine
     }
 
-    @Throws(IllegalStateException::class)
     fun process() {
+        val engine = engine ?: throw IllegalStateException(
+            "No Engine implementation found. " +
+                    "Add either sdk-opencv or sdk-live dependency."
+        )
+
         engine.process()
     }
 }
