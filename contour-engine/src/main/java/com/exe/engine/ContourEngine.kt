@@ -5,7 +5,7 @@ object ContourEngine {
     @Volatile
     private var engine: Engine? = null
 
-    internal fun register(engine: Engine) {
+    fun register(engine: Engine) {
         this.engine = engine
     }
 
