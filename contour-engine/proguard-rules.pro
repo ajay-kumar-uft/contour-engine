@@ -20,3 +20,4 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class com.exe.engine.ContourEngine { *; }
+-keep class com.exe.engine.ContourDocumentEngine { *; }
