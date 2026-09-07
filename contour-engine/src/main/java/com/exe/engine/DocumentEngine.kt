@@ -1,10 +1,14 @@
 package com.exe.engine
 
-/** Receives asynchronous results and lifecycle notifications from a document SDK. */
-interface DocumentCallback<Result : Any, Event : Any> {
-    fun onResult(result: Result)
+import com.exe.engine.models.DocumentEventModel
+import com.exe.engine.models.DocumentInputModel
+import com.exe.engine.models.DocumentResultModel
 
-    fun onEventReceived(event: Event) = Unit
+/** Receives asynchronous results and lifecycle notifications from a document SDK. */
+interface DocumentCallback {
+    fun onResult(result: DocumentResultModel)
+
+    fun onEventReceived(event: DocumentEventModel) = Unit
 
     fun onSdkClosed() = Unit
 }
@@ -12,11 +16,11 @@ interface DocumentCallback<Result : Any, Event : Any> {
 /**
  * An implementation capable of asynchronously processing one kind of document.
  *
- * [Input] and [Result] belong to the document SDK, allowing check-ui, ID, and
- * future SDKs to expose models specific to their own workflows.
+ * All document SDK modules use the shared input, result, and event models
+ * exposed by contour-engine.
  */
-interface DocumentEngine<Input : Any, Result : Any, Event : Any> {
+interface DocumentEngine {
     val documentType: DocumentType
 
-    fun process(model: Input, callback: DocumentCallback<Result, Event>)
+    fun process(model: DocumentInputModel, callback: DocumentCallback)
 }

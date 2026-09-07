@@ -1,18 +1,19 @@
 package com.exe.engine
 
+import com.exe.engine.models.DocumentInputModel
 import java.util.concurrent.ConcurrentHashMap
 
 /** Registry and entry point for document-specific engines. */
 object ContourDocumentEngine {
 
-    private val engines = ConcurrentHashMap<DocumentType, DocumentEngine<*, *, *>>()
+    private val engines = ConcurrentHashMap<DocumentType, DocumentEngine>()
 
     /**
      * Registers [engine] for its document type. A later registration for the
      * same type replaces the previous implementation.
      */
     @JvmStatic
-    fun register(engine: DocumentEngine<*, *, *>) {
+    fun register(engine: DocumentEngine) {
         engines[engine.documentType] = engine
     }
 
@@ -25,23 +26,14 @@ object ContourDocumentEngine {
      * invokes [callback] when its asynchronous work completes.
      */
     @JvmStatic
-    fun <Input : Any, Result : Any, Event : Any> process(
+    fun process(
         documentType: DocumentType,
-        model: Input,
-        callback: DocumentCallback<Result, Event>
+        model: DocumentInputModel,
+        callback: DocumentCallback
     ) {
         val engine = engines[documentType]
             ?: throw DocumentEngineNotRegisteredException(documentType)
 
-        invoke(engine, model, callback)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private fun <Input : Any, Result : Any, Event : Any> invoke(
-        engine: DocumentEngine<*, *, *>,
-        model: Input,
-        callback: DocumentCallback<Result, Event>
-    ) {
-        (engine as DocumentEngine<Input, Result, Event>).process(model, callback)
+        engine.process(model, callback)
     }
 }
