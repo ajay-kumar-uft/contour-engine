@@ -1,3 +1,5 @@
 package com.exe.engine.models
 
-data class DocumentInputModel(val clientId: String)
+import android.content.Context
+
+data class DocumentInputModel(val context: Context, val clientId: String? = null)
